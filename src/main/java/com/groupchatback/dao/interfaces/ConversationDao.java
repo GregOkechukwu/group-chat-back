@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ConversationDao {
     Conversation findConversation(EntityManager em, String conversationId) throws BadRequestException;
-    ConversationMember findConversationMember(EntityManager em, String conversationMemberId) throws BadRequestException;
+    ConversationMember findConversationMember(EntityManager em, String userId, String conversationId) throws BadRequestException;
     List<Object[]> getConversations(String userId);
     List<Object[]> getUsersInConversationExceptHost(String conversationId, String hostId);
     Object[] getHostOfConversation(String conversationId);
@@ -20,4 +20,6 @@ public interface ConversationDao {
     void joinConversationAsNewMember(String userId, String conversationId, Date dateJoined);
     void updateInChatStatus(String userId, String conversationId, boolean inChat);
     void leaveConversation(String userId, String conversationId);
+    void deleteConversation(String userId, String conversationId);
+    void updateConversationHost(String conversationId, String newHostId);
 }

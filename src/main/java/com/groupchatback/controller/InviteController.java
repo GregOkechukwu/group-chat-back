@@ -31,7 +31,7 @@ public class InviteController {
         List<InviteResponse> invites = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            Object[] record = inviteRecords.get(i);
+            Object[] record = inviteRecords.get(i), pic = pics.get(i);
 
             String inviteId = (String)record[0];
             String conversationId = (String)record[1];
@@ -45,8 +45,8 @@ public class InviteController {
 
             Date dateSent = (Date)record[9];
 
-            byte[] byteArr = (byte[]) pics.get(i)[0];
-            String mimeType = (String)pics.get(i)[1];
+            byte[] byteArr = (byte[])pic[0];
+            String mimeType = (String)pic[1];
 
             InviteResponse invite = new InviteResponse(
                     inviteId,

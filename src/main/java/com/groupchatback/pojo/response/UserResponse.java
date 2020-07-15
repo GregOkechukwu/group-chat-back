@@ -16,14 +16,18 @@ public class UserResponse extends Response {
     }
 
     public UserResponse(
+            String userId,
             String username,
             String firstName,
-            String lastName
+            String lastName,
+            String email
     ) {
         super();
+        setUserId(userId);
         setUsername(username);
         setFirstName(firstName);
         setLastName(lastName);
+        setEmail(email);
     }
 
     public UserResponse(

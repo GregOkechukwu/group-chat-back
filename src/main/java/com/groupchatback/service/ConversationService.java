@@ -18,7 +18,6 @@ public class ConversationService {
     @Autowired
     private LocalMetaData localBean;
 
-
     private Map<String, Date> getDateJoinedLookup(List<Object[]> userRecords, String conversationId) {
         Map<String, Date> dateJoinedLookup = new HashMap<>();
         int n = userRecords.size();
@@ -70,7 +69,7 @@ public class ConversationService {
      * Get the profile pic of the first two users after sorting
      */
 
-    public List<Object[]> getPrioritizedUsersInConversation(String conversationId) throws Exception {
+    public List<Object[]> getPrioritizedUsersInConversation(String conversationId) {
         List<Object[]> prioritizedUsers = new ArrayList<>();
 
         Object[] hostRecord = this.conversationDao.getHostOfConversation(conversationId);
@@ -110,6 +109,20 @@ public class ConversationService {
     public void updateInChatStatus(String conversationid, boolean inChat) {
         String decodedUserId = this.localBean.getDecodedUserId();
         this.conversationDao.updateInChatStatus(decodedUserId, conversationid, inChat);
+    }
+
+    public void leaveConversation(String conversationId) {
+        String decodedUserId = this.localBean.getDecodedUserId();
+        this.conversationDao.leaveConversation(decodedUserId, conversationId);
+    }
+
+    public void deleteConversation(String conversationId) {
+        String decodedUserId = this.localBean.getDecodedUserId();
+        this.conversationDao.deleteConversation(decodedUserId, conversationId);
+    }
+
+    public void updateConversationHost(String converstaionId, String newHostId) {
+        this.conversationDao.updateConversationHost(converstaionId, newHostId);
     }
 
 }

@@ -15,6 +15,7 @@ public class Conversation {
     private User host;
     private List<Invite> invites;
     private List<ConversationMember> members;
+    private List<Message> messages;
 
     public Conversation() {
     }
@@ -65,7 +66,7 @@ public class Conversation {
         this.host = host;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = CascadeType.ALL, mappedBy = "conversation")
+    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "conversation")
     public List<Invite> getInvites() {
         return invites;
     }
@@ -74,12 +75,21 @@ public class Conversation {
         this.invites = invites;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = CascadeType.ALL, mappedBy = "conversation")
+    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "conversation")
     public List<ConversationMember> getMembers() {
         return members;
     }
 
     public void setMembers(List<ConversationMember> members) {
         this.members = members;
+    }
+
+    @OneToMany(targetEntity = com.groupchatback.entity.Message.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "conversation")
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

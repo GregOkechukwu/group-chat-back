@@ -2,10 +2,7 @@ package com.groupchatback.dao;
 
 import com.groupchatback.dao.interfaces.ConversationDao;
 import com.groupchatback.dao.interfaces.UserDao;
-import com.groupchatback.entity.Conversation;
-import com.groupchatback.entity.ConversationMember;
-import com.groupchatback.entity.Invite;
-import com.groupchatback.entity.User;
+import com.groupchatback.entity.*;
 import com.groupchatback.util.DaoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -31,7 +28,13 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
     }
 
     @Override
-    public ConversationMember findConversationMember(EntityManager em, String conversationMemberId) throws BadRequestException {
+    public ConversationMember findConversationMember(EntityManager em, String userId, String conversationId) throws BadRequestException {
+        String query = "SELECT conversation_member.id FROM ConversationMember conversation_member " +
+                "INNER JOIN conversation_member.member user " +
+                "INNER JOIN conversation_member.conversation conversation " +
+                "WHERE user.id = ?1 AND conversation.id = ?2";
+
+        String conversationMemberId = (String)em.createQuery(query).setParameter(1, userId).setParameter(2, conversationId).getSingleResult();
         ConversationMember conversationMember = em.find(ConversationMember.class, conversationMemberId);
 
         if (conversationMember == null) {
@@ -47,7 +50,7 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
 
         String subQuery = "(SELECT COUNT(*) FROM Conversation c LEFT JOIN c.members WHERE c.name = conversation.name GROUP BY c.id)";
 
-        String query = "SELECT conversation.id, conversation.name, host.username, " + subQuery + " as member_count FROM Conversation conversation " +
+        String query = "SELECT conversation.id, conversation.name, host.id, host.username, " + subQuery + " as member_count FROM Conversation conversation " +
                 "INNER JOIN conversation.members conversation_member " +
                 "INNER JOIN conversation_member.member user " +
                 "INNER JOIN conversation.host host " +
@@ -60,6 +63,7 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
 
          return getCastedList(records);
     }
+
     @Override
     public List<Object[]> getUsersInConversationExceptHost(String conversationId, String hostId) {
         EntityManager em = getEntityManagerFactory().createEntityManager();
@@ -141,6 +145,7 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
         EntityManager em = getEntityManagerFactory().createEntityManager();
 
         String query = "SELECT COUNT(*) from Conversation conversation WHERE conversation.name = ?1";
+
         Object result = em.createQuery(query)
                 .setParameter(1, conversationName)
                 .getSingleResult();
@@ -164,15 +169,8 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
     public void updateInChatStatus(String userId, String conversationId, boolean inChat) {
         EntityManager em = getEntityManagerFactory().createEntityManager();
 
-        String query = "SELECT conversation_member.id FROM ConversationMember conversation_member " +
-                "INNER JOIN conversation_member.member user " +
-                "INNER JOIN conversation_member.conversation conversation " +
-                "WHERE user.id = ?1 AND conversation.id = ?2";
-
-        String conversationMemberId = (String)em.createQuery(query).setParameter(1, userId).setParameter(2, conversationId).getSingleResult();
-
         em.getTransaction().begin();
-        ConversationMember conversationMember = this.findConversationMember(em, conversationMemberId);
+        ConversationMember conversationMember = this.findConversationMember(em, userId, conversationId);
         conversationMember.setInchat(inChat);
 
         em.persist(conversationMember);
@@ -183,17 +181,51 @@ public class ConversationDaoImpl extends DaoUtil implements ConversationDao {
     public void leaveConversation(String userId, String conversationId) {
         EntityManager em = getEntityManagerFactory().createEntityManager();
 
-        String query = "SELECT conversation_member.id FROM ConversationMember conversation_member " +
-                "INNER JOIN conversation_member.member user " +
-                "INNER JOIN conversation_member.conversation conversation " +
-                "WHERE user.id = ?1 AND conversation.id = ?2";
-
-        String conversationMemberId = (String)em.createQuery(query).setParameter(1, userId).setParameter(2, conversationId).getSingleResult();
-
         em.getTransaction().begin();
-        ConversationMember conversationMember = this.findConversationMember(em, conversationMemberId);
+        ConversationMember conversationMember = this.findConversationMember(em, userId, conversationId);
 
         em.remove(conversationMember);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void deleteConversation(String userId, String conversationId) {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+
+        em.getTransaction().begin();
+        Conversation conversation = this.findConversation(em, conversationId);
+
+        List<ConversationMember> conversationMembers = conversation.getMembers();
+        List<Invite> invites = conversation.getInvites();
+        List<Message> messages = conversation.getMessages();
+
+        for (ConversationMember member : conversationMembers) {
+            em.remove(member);
+        }
+
+        for (Invite invite : invites) {
+            em.remove(invite);
+        }
+
+        for (Message message : messages) {
+            em.remove(message);
+        }
+
+        em.remove(conversation);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void updateConversationHost(String conversationId, String newHostId) {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+
+        em.getTransaction().begin();
+        Conversation conversation = this.findConversation(em, conversationId);
+        User newHost = this.userDao.findUser(em, newHostId);
+
+        conversation.setHost(newHost);
+
+        em.persist(conversation);
         em.getTransaction().commit();
     }
 }

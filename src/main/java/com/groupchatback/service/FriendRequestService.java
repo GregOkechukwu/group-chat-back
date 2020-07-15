@@ -18,7 +18,6 @@ public class FriendRequestService {
     @Autowired
     private UserDao userDao;
 
-
     @Autowired
     private LocalMetaData localBean;
 

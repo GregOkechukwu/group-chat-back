@@ -37,6 +37,14 @@ public class ConversationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteConversation(@NonNull @RequestParam Map<String, String> requestParams) {
+        String conversationId = requestParams.get("conversationId");
+        this.conversationService.deleteConversation(conversationId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping
     public Response getConversations() throws Exception {
         final int keyIdx = 0, hasPicIdx = 4;
@@ -52,13 +60,15 @@ public class ConversationController {
 
             String conversationId = (String)record[0];
             String conversationName = (String)record[1];
-            String conversationHost = (String)record[2];
-            int userCount = ((Long)record[3]).intValue();
+            String conversationHostId = (String)record[2];
+            String conversationHostUsername = (String)record[3];
+            int userCount = ((Long)record[4]).intValue();
 
             ConversationResponse conversation = new ConversationResponse(
                     conversationId,
                     conversationName,
-                    conversationHost,
+                    conversationHostId,
+                    conversationHostUsername,
                     userCount
             );
 
@@ -99,10 +109,29 @@ public class ConversationController {
     }
 
     @PutMapping("/chatstatus")
-    public void updateInChatStatus(@NonNull @RequestBody Request request) throws Exception {
+    public ResponseEntity<?> updateInChatStatus(@NonNull @RequestBody Request request) throws Exception {
         String conversationId = (String)request.get("conversationId");
         boolean inChatStatus = (boolean)request.get("inChatStatus");
 
         this.conversationService.updateInChatStatus(conversationId, inChatStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/leave")
+    public ResponseEntity<?> leaveConversation(@NonNull @RequestParam Map<String, String> requestParams) {
+        String conversationId = requestParams.get("conversationId");
+        this.conversationService.leaveConversation(conversationId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateConversationHost(@NonNull @RequestBody Request request) {
+        String conversationId = (String)request.get("conversationId");
+        String newHostId = (String)request.get("newHostId");
+
+        this.conversationService.updateConversationHost(conversationId, newHostId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

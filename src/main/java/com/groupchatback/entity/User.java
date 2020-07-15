@@ -23,6 +23,7 @@ public class User {
     private List<FriendRequest> friendrequestssent;
     private List<FriendRequest> friendrequestreceived;
     private List<UserFriend> userFriends;
+    private List<Message> messages;
 
     public User() {
     }
@@ -104,7 +105,7 @@ public class User {
         this.isonline = isonline;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = CascadeType.ALL, mappedBy = "member")
+    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "member")
     public List<ConversationMember> getHostconversations() {
         return hostconversations;
     }
@@ -113,7 +114,7 @@ public class User {
         this.hostconversations = hostconversations;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = CascadeType.ALL, mappedBy = "member")
+    @OneToMany(targetEntity = com.groupchatback.entity.ConversationMember.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "member")
     public List<ConversationMember> getConversations() {
         return conversations;
     }
@@ -122,7 +123,7 @@ public class User {
         this.conversations = conversations;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = CascadeType.ALL, mappedBy = "sender")
+    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "sender")
     public List<Invite> getInvitessent() {
         return invitessent;
     }
@@ -131,7 +132,7 @@ public class User {
         this.invitessent = invitessent;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = CascadeType.ALL, mappedBy = "recipient")
+    @OneToMany(targetEntity = com.groupchatback.entity.Invite.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "recipient")
     public List<Invite> getInvitesreceived() {
         return invitesreceived;
     }
@@ -140,7 +141,7 @@ public class User {
         this.invitesreceived = invitesreceived;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.FriendRequest.class, cascade = CascadeType.ALL, mappedBy = "sender")
+    @OneToMany(targetEntity = com.groupchatback.entity.FriendRequest.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "sender")
     public List<FriendRequest> getFriendrequestssent() {
         return friendrequestssent;
     }
@@ -149,7 +150,7 @@ public class User {
         this.friendrequestssent = friendrequestssent;
     }
 
-    @OneToMany(targetEntity = com.groupchatback.entity.FriendRequest.class, cascade = CascadeType.ALL, mappedBy = "recipient")
+    @OneToMany(targetEntity = com.groupchatback.entity.FriendRequest.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "recipient")
     public List<FriendRequest> getFriendrequestreceived() {
         return friendrequestreceived;
     }
@@ -158,12 +159,21 @@ public class User {
         this.friendrequestreceived = friendrequestreceived;
     }
 
-    @OneToMany(targetEntity = UserFriend.class, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(targetEntity = UserFriend.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "user")
     public List<UserFriend> getUserFriends() {
         return userFriends;
     }
 
     public void setUserFriends(List<UserFriend> userFriends) {
         this.userFriends = userFriends;
+    }
+
+    @OneToMany(targetEntity = Message.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "sender")
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

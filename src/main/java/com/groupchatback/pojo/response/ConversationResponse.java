@@ -5,17 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ConversationResponse extends UserResponse {
     private String conversationId;
     private String conversationName;
-    private String conversationHost;
+    private String conversationHostId;
+    private String conversationHostUsername;
     private int userCount;
 
     public ConversationResponse() {
     }
 
-    public ConversationResponse(String conversationId, String conversationName, String conversationHost, int userCount) {
+    public ConversationResponse(String conversationId, String conversationName, String conversationHostId, String conversationHostUsername, int userCount) {
         super();
         setConversationId(conversationId);
         setConversationName(conversationName);
-        setConversationHost(conversationHost);
+        setConversationHostId(conversationHostId);
+        setConversationHostUsername(conversationHostUsername);
         setUserCount(userCount);
     }
 
@@ -45,14 +47,24 @@ public class ConversationResponse extends UserResponse {
         this.conversationName = conversationName;
     }
 
-    @JsonProperty(value = "conversationHost")
-    public String getConversationHost() {
-        return conversationHost;
+    @JsonProperty(value = "conversationHostId")
+    public String getConversationHostId() {
+        return conversationHostId;
     }
 
-    @JsonProperty(value = "conversationHost")
-    public void setConversationHost(String conversationHost) {
-        this.conversationHost = conversationHost;
+    @JsonProperty(value = "conversationHostId")
+    public void setConversationHostId(String conversationHostId) {
+        this.conversationHostId = conversationHostId;
+    }
+
+    @JsonProperty(value = "conversationHostUsername")
+    public String getConversationHostUsername() {
+        return conversationHostUsername;
+    }
+
+    @JsonProperty(value = "conversationHostUsername")
+    public void setConversationHostUsername(String conversationHostUsername) {
+        this.conversationHostUsername = conversationHostUsername;
     }
 
     @JsonProperty(value = "userCount")

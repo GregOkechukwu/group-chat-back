@@ -59,11 +59,12 @@ public class UserController {
     public UserResponse getUser() {
         Object[] userInfo = this.userService.getUserById();
 
-        String username  = (String)userInfo[0];
-        String firstName = (String)userInfo[1];
-        String lastName  = (String)userInfo[2];
+        String userId = (String)userInfo[0];
+        String username  = (String)userInfo[1];
+        String firstName = (String)userInfo[2];
+        String lastName  = (String)userInfo[3];
 
-        return new UserResponse(username, firstName, lastName);
+        return new UserResponse(userId, username, firstName, lastName, null);
     }
 
     @PutMapping
@@ -150,6 +151,7 @@ public class UserController {
 
             user.add("byteArrBase64", byteArr);
             user.add("mimeType", mimeType);
+
             users.add(user);
         }
 
@@ -214,7 +216,7 @@ public class UserController {
     }
 
     @GetMapping("/conversation/{conversationId}")
-    private Response getUsersInConversation(@NonNull @PathVariable String conversationId) throws Exception {
+    public Response getUsersInConversation(@NonNull @PathVariable String conversationId) throws Exception {
         int userIdIdx = 0, hasPicIdx = 5;
 
         this.conversationService.updateInChatStatus(conversationId, true);
@@ -225,9 +227,8 @@ public class UserController {
 
         int n = userRecords.size();
 
-
         for (int i = 0; i < n; i++) {
-            Object[] record = userRecords.get(i);
+            Object[] record = userRecords.get(i), pic = pics.get(i);
 
             String userId = (String)record[0];
             String username = (String)record[1];
@@ -239,8 +240,8 @@ public class UserController {
             boolean inChat = (boolean)record[6];
             boolean isHost = (boolean)record[7];
 
-            byte[] byteArr = (byte[])pics.get(i)[0];
-            String mimeType = (String)pics.get(i)[1];
+            byte[] byteArr = (byte[])pic[0];
+            String mimeType = (String)pic[1];
 
             UserResponse conversationMember = new UserResponse(
                     userId,

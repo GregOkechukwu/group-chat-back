@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class EnvConfigUtil {
-    private final static String absolutePath  = "/Users/okechukwug/Documents/Workspace/groupchatback/src/main/resources/env.config";
+    private final static String absolutePath  = "/Users/okechukwug/Documents/Workspace/group-chat-back/src/main/resources/env.config";
     private final static Properties properties = new Properties();
 
     public static String getProperty(String key)  {

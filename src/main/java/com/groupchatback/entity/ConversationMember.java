@@ -37,7 +37,7 @@ public class ConversationMember {
         this.id = id;
     }
 
-    @ManyToOne(targetEntity = com.groupchatback.entity.User.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = com.groupchatback.entity.User.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "member")
     public User getMember() {
         return member;
@@ -47,7 +47,7 @@ public class ConversationMember {
         this.member = member;
     }
 
-    @ManyToOne(targetEntity = com.groupchatback.entity.Conversation.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = com.groupchatback.entity.Conversation.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "conversation")
     public Conversation getConversation() {
         return conversation;

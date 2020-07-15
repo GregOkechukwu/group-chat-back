@@ -34,7 +34,7 @@ public class UserFriend {
         this.id = id;
     }
 
-    @ManyToOne(targetEntity = com.groupchatback.entity.User.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = com.groupchatback.entity.User.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "myuser")
     public User getUser() {
         return user;
@@ -44,7 +44,7 @@ public class UserFriend {
         this.user = user;
     }
 
-    @OneToOne(targetEntity = com.groupchatback.entity.User.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = com.groupchatback.entity.User.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "friend")
     public User getFriend() {
         return friend;

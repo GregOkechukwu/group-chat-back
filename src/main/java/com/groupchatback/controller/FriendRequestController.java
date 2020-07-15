@@ -32,7 +32,7 @@ public class FriendRequestController {
         List<FriendRequestResponse> friendRequests = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            Object[] record = requestRecords.get(i);
+            Object[] record = requestRecords.get(i), pic = pics.get(i);
 
             String friendRequestId = (String)record[0];
             Date dateSent = (Date)record[1];
@@ -43,8 +43,8 @@ public class FriendRequestController {
             boolean isOnline = (boolean)record[6];
             boolean hasProfilePic = (boolean)record[7];
 
-            byte[] byteArr = (byte[]) pics.get(i)[0];
-            String mimeType = (String)pics.get(i)[1];
+            byte[] byteArr = (byte[])pic[0];
+            String mimeType = (String)pic[1];
 
             FriendRequestResponse friendRequest = new FriendRequestResponse(
                     friendRequestId,

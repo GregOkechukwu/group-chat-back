@@ -55,7 +55,7 @@ public class UserDaoImpl extends DaoUtil implements UserDao {
     public Object[] getUser(String userId) {
         EntityManager em = getEntityManagerFactory().createEntityManager();
 
-        String query = "SELECT user.username, user.firstname, user.lastname FROM User user " +
+        String query = "SELECT user.id, user.username, user.firstname, user.lastname FROM User user " +
                 "WHERE user.id = ?1 ";
 
         Object result = em.createQuery(query)
@@ -313,7 +313,6 @@ public class UserDaoImpl extends DaoUtil implements UserDao {
 
         em.getTransaction().commit();
     }
-
 
     @Override
     public void removeFriend(String userId, String friendId) {
